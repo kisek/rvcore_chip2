@@ -61,60 +61,85 @@ module user_proj_example #(
     input  [63:0] la_oenb,
 
     // IOs
-    input  [BITS-1:0] io_in,
-    output [BITS-1:0] io_out,
-    output [BITS-1:0] io_oeb,
+    input  [19:0] io_in,
+    output [19:0] io_out,
+    output [19:0] io_oeb,
 
     // IRQ
     output [2:0] irq
 );
+
+   // Unused
+   assign wbs_ack_o = 1'b0;
+   assign wbs_dat_o = 32'b0;
+   assign la_data_out = 64'b0;
+   
     wire clk;
     wire rst;
 
-    wire [BITS-1:0] rdata; 
-    wire [BITS-1:0] wdata;
     wire [BITS-1:0] count;
 
-    wire valid;
-    wire [3:0] wstrb;
-    wire [BITS-1:0] la_write;
-
-    // WB MI A
-    assign valid = wbs_cyc_i && wbs_stb_i; 
-    assign wstrb = wbs_sel_i & {4{wbs_we_i}};
-    assign wbs_dat_o = {{(32-BITS){1'b0}}, rdata};
-    assign wdata = wbs_dat_i[BITS-1:0];
-
     // IO
-    assign io_out = count;
-    assign io_oeb = {(BITS){rst}};
+    assign io_out[7:0] = count[15:8];
+    assign io_oeb[7:0] = 8'b0;
 
     // IRQ
     assign irq = 3'b000;	// Unused
 
-    // LA
-    assign la_data_out = {{(64-BITS){1'b0}}, count};
-    // Assuming LA probes [61:46] are for controlling the count register  
-    assign la_write = ~la_oenb[61:62-BITS] & ~{BITS{valid}};
-    // Assuming LA probes [63:62] are for controlling the count clk & reset  
-    assign clk = (~la_oenb[62]) ? la_data_in[62]: wb_clk_i;
-    assign rst = (~la_oenb[63]) ? la_data_in[63]: wb_rst_i;
+   //=======================================
 
-    counter #(
-        .BITS(BITS)
-    ) counter(
-        .clk(clk),
-        .reset(rst),
-        .ready(wbs_ack_o),
-        .valid(valid),
-        .rdata(rdata),
-        .wdata(wbs_dat_i[BITS-1:0]),
-        .wstrb(wstrb),
-        .la_write(la_write),
-        .la_input(la_data_in[61:62-BITS]),
-        .count(count)
-    );
+   wire 	    clk2;
+   wire 	    rst2;
+   wire 	    rxd;
+   wire 	    txd;
+   wire [3:0] 	    led;
+   wire 	    ext_clk;
+   wire 	    ext_clk_en;
+   wire 	    ext_rst;
+   wire 	    ext_rst_en;
 
+   assign io_oeb[19] = 1;
+   assign io_oeb[18:14] = 0;
+   assign io_oeb[13:10] = 1;
+   assign io_oeb[9:8] = 0;
+
+   assign rxd = io_in[19];       // input rxd
+   assign io_out[19] = 1'b0;     // (not used)
+
+   assign io_out[18] = txd;      // ouptput txd
+
+   assign io_out[17:14] = led;   // output led[3:0]
+
+   assign ext_clk = io_in[13];   // external clock input
+   assign io_out[13] = 1'b0;     // (not used)
+
+   assign ext_clk_en = io_in[12];// external clock input enable
+   assign io_out[12] = 1'b0;     // (not used)
+                             
+   assign ext_rst = io_in[11];   // external reset input
+   assign io_out[11] = 1'b0;     // (not used)
+
+   assign ext_rst_en = io_in[10];// external reset input enable
+   assign io_out[10] = 1'b0;     // (not used)
+
+   assign io_out[9] = wb_clk_i; // moniter of wb_clk_i
+   
+   assign io_out[8] = wb_rst_i; // moniter of wb_rst_i
+
+   assign clk2 = (ext_clk_en) ? ext_clk: wb_clk_i;
+   assign rst2 = (ext_rst_en) ? ext_rst: wb_rst_i;
+
+   rvcorep i_rvcorep(.clk(clk2), 
+                     .rst(rst2), 
+                     .w_rxd(rxd),
+                     .r_txd(txd), 
+                     .led(led));
+
+   counter #(.BITS(BITS)) counter(.clk(clk2),
+				  .reset(rst2),
+				  .count(count)
+				  );
+   
 endmodule
 
 module counter #(
@@ -122,34 +147,12 @@ module counter #(
 )(
     input clk,
     input reset,
-    input valid,
-    input [3:0] wstrb,
-    input [BITS-1:0] wdata,
-    input [BITS-1:0] la_write,
-    input [BITS-1:0] la_input,
-    output reg ready,
-    output reg [BITS-1:0] rdata,
     output reg [BITS-1:0] count
 );
 
     always @(posedge clk) begin
-        if (reset) begin
-            count <= 0;
-            ready <= 0;
-        end else begin
-            ready <= 1'b0;
-            if (~|la_write) begin
-                count <= count + 1;
-            end
-            if (valid && !ready) begin
-                ready <= 1'b1;
-                rdata <= count;
-                if (wstrb[0]) count[7:0]   <= wdata[7:0];
-                if (wstrb[1]) count[15:8]  <= wdata[15:8];
-            end else if (|la_write) begin
-                count <= la_write & la_input;
-            end
-        end
+       if (reset) count <= 0;
+       else count <= count + 1;
     end
 
 endmodule

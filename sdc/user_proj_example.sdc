@@ -1,6 +1,6 @@
 ###############################################################################
 # Created by write_sdc
-# Tue Oct 17 11:34:50 2023
+# Wed Dec  6 02:46:08 2023
 ###############################################################################
 current_design user_proj_example
 ###############################################################################
@@ -623,6 +623,10 @@ set_multicycle_path -setup\
 # Environment
 ###############################################################################
 set_load -pin_load 0.1900 [get_ports {wbs_ack_o}]
+set_load -pin_load 0.1900 [get_ports {io_oeb[19]}]
+set_load -pin_load 0.1900 [get_ports {io_oeb[18]}]
+set_load -pin_load 0.1900 [get_ports {io_oeb[17]}]
+set_load -pin_load 0.1900 [get_ports {io_oeb[16]}]
 set_load -pin_load 0.1900 [get_ports {io_oeb[15]}]
 set_load -pin_load 0.1900 [get_ports {io_oeb[14]}]
 set_load -pin_load 0.1900 [get_ports {io_oeb[13]}]
@@ -639,6 +643,10 @@ set_load -pin_load 0.1900 [get_ports {io_oeb[3]}]
 set_load -pin_load 0.1900 [get_ports {io_oeb[2]}]
 set_load -pin_load 0.1900 [get_ports {io_oeb[1]}]
 set_load -pin_load 0.1900 [get_ports {io_oeb[0]}]
+set_load -pin_load 0.1900 [get_ports {io_out[19]}]
+set_load -pin_load 0.1900 [get_ports {io_out[18]}]
+set_load -pin_load 0.1900 [get_ports {io_out[17]}]
+set_load -pin_load 0.1900 [get_ports {io_out[16]}]
 set_load -pin_load 0.1900 [get_ports {io_out[15]}]
 set_load -pin_load 0.1900 [get_ports {io_out[14]}]
 set_load -pin_load 0.1900 [get_ports {io_out[13]}]
@@ -760,6 +768,14 @@ set_input_transition -max 0.1700 [get_ports {wbs_cyc_i}]
 set_input_transition 0.1500 [get_ports {wbs_stb_i}]
 set_input_transition -min 0.0900 [get_ports {wbs_we_i}]
 set_input_transition -max 0.1400 [get_ports {wbs_we_i}]
+set_input_transition -min 0.0500 [get_ports {io_in[19]}]
+set_input_transition -max 0.3800 [get_ports {io_in[19]}]
+set_input_transition -min 0.0500 [get_ports {io_in[18]}]
+set_input_transition -max 0.3800 [get_ports {io_in[18]}]
+set_input_transition -min 0.0500 [get_ports {io_in[17]}]
+set_input_transition -max 0.3800 [get_ports {io_in[17]}]
+set_input_transition -min 0.0500 [get_ports {io_in[16]}]
+set_input_transition -max 0.3800 [get_ports {io_in[16]}]
 set_input_transition -min 0.0500 [get_ports {io_in[15]}]
 set_input_transition -max 0.3800 [get_ports {io_in[15]}]
 set_input_transition -min 0.0500 [get_ports {io_in[14]}]

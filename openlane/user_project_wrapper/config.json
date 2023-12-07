@@ -7,7 +7,7 @@
 		"dir::../../verilog/rtl/user_project_wrapper.v"
 	],
 	"CLOCK_PORT": "wb_clk_i",
-	"CLOCK_NET": "mprj.clk",
+	"CLOCK_NET": "mprj.clk2",
 	"CLOCK_PERIOD": 25,
 	"MACRO_PLACEMENT_CFG": "dir::macro.cfg",
 	"VERILOG_FILES_BLACKBOX": [

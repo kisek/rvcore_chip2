@@ -1,10 +1,9 @@
-# Caravel User Project
+# RVcore VLSI Chip Project
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![UPRJ_CI](https://github.com/efabless/caravel_project_example/actions/workflows/user_project_ci.yml/badge.svg)](https://github.com/efabless/caravel_project_example/actions/workflows/user_project_ci.yml) [![Caravel Build](https://github.com/efabless/caravel_project_example/actions/workflows/caravel_build.yml/badge.svg)](https://github.com/efabless/caravel_project_example/actions/workflows/caravel_build.yml)
+RISC-V is a RISC-based open instruction set architecture.
+The basic 32-bit integer instruction set in RISC-V is defined as RV32I.
+We are developing an optimized RV32I processor named RVCoreP, 
+adopting five-stage pipelining targetting both FPGAs and ASICs.
+This project aims to evaluate our preliminary processor design
+regarding operating frequency and power consumption.
 
-| :exclamation: Important Note            |
-|-----------------------------------------|
-
-## Please fill in your project documentation in this README.md file 
-
-Refer to [README](docs/source/index.rst) for this sample project documentation. 
